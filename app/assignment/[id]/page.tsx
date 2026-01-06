@@ -4,12 +4,13 @@ import { AnalyticsDashboard } from "../../../components/AnalyticsDashboard";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-export default async function AssignmentPage({ params }: { params: { id: string } }) {
+export default async function AssignmentPage({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = await params;
     const session = await auth();
     if (!session?.user?.id) redirect("/");
 
     const assignment = await prisma.assignment.findUnique({
-        where: { id: params.id },
+        where: { id: resolvedParams.id },
         include: {
             submissions: { include: { files: true } },
             questions: true,
