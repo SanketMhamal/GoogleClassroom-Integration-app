@@ -87,6 +87,7 @@ model Assignment {
   courseId    String
   course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   submissions Submission[]
+  questions   Question[]
 
   @@index([courseId])
 }
@@ -97,7 +98,32 @@ model Submission {
   studentEmail String?
   answers      Json
   submittedAt  DateTime
+  files        FormFile[]
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
 
   @@index([assignmentId])
+}
+
+model Question {
+  id           String     @id // Google Question ID
+  assignmentId String
+  title        String?    @db.Text
+  type         String?    // RADIO, TEXT, CHECKBOX, etc.
+  options      Json?      // Store options as JSON array
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@index([assignmentId])
+}
+
+model FormFile {
+  id            String     @id @default(cuid())
+  fileId        String     // Google Drive File ID
+  name          String
+  mimeType      String
+  thumbnailLink String?    @db.Text
+  webViewLink   String?    @db.Text
+  submissionId  String
+  submission    Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@index([submissionId])
 }

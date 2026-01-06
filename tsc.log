@@ -1,0 +1,1 @@
+components/AnalyticsDashboard.tsx(128,95): error TS18048: 'percent' is possibly 'undefined'.
